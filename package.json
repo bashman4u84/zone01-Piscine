@@ -1,0 +1,15 @@
+{
+  "name": "doc-generator",
+  "version": "1.0.0",
+  "description": "A script to generate .docx files from checkpoint solutions.",
+  "main": "create_doc.js",
+  "scripts": {
+    "start": "node create_doc.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "docx": "^8.5.0"
+  }
+}
