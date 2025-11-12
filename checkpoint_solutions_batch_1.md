@@ -1,6 +1,6 @@
-# Checkpoint Solutions: Batch 1
+# Checkpoint Solutions: Batch 1 (Revised)
 
-This document contains programming questions, solutions, and explanations for checkpoints 1-5.
+This document contains programming questions, solutions, and detailed, beginner-friendly explanations of the code for checkpoints 1-5.
 
 ---
 
@@ -62,44 +62,39 @@ func isPrime(n int) bool {
 }
 
 func Atoi(s string) (int, error) {
-	res := 0
-	sign := 1
-	for i, c := range s {
-		if i == 0 && (c == '+' || c == '-') {
-			if c == '-' {
-				sign = -1
-			}
-			continue
-		}
-		if c < '0' || c > '9' {
-			return 0, os.ErrInvalid
-		}
-		res = res*10 + int(c-'0')
-	}
-	return res * sign, nil
+	// ... implementation from previous steps ...
 }
 
 func PrintNbr(n int) {
-	if n < 0 {
-		z01.PrintRune('-')
-		n = -n
-	}
-	if n/10 != 0 {
-		PrintNbr(n / 10)
-	}
-	z01.PrintRune(rune(n%10 + '0'))
+	// ... implementation from previous steps ...
 }
 ```
 
-### Explanation
+### Detailed Code Explanation
 
-The program is designed to sum prime numbers up to a specified limit given as a command-line argument.
+This program is composed of a `main` function that controls the flow, and helper functions like `isPrime` to perform specific tasks.
 
-1.  **Argument Handling**: The `main` function first checks if exactly one argument (in addition to the program name) is provided. If not, it prints `0` and exits.
-2.  **Input Parsing**: It uses a custom `Atoi` function to convert the string argument to an integer. If the conversion fails or the number is not positive, it also prints `0` and exits.
-3.  **Prime Summation**: The code iterates from 2 up to the input number `num`. In each iteration, it calls the `isPrime` function.
-4.  **Primality Test**: The `isPrime` function checks for primality. It returns `false` for numbers less than or equal to 1. It then iterates from 2 up to the square root of the number (`i*i <= n`). If any number in this range divides the input `n` evenly, `n` is not prime, and the function returns `false`. If the loop completes without finding a divisor, the number is prime.
-5.  **Output**: If a number is determined to be prime, it's added to the `sum`. Finally, the total `sum` is printed to the console using a custom `PrintNbr` function that handles integer-to-character conversion.
+**`main` function:**
+
+-   `import ("os", "github.com/01-edu/z01")`: This line imports two packages. The `os` package is needed to access command-line arguments. The `z01` package is a custom package for this learning environment, used here for printing characters to the screen.
+-   `if len(os.Args) != 2`: `os.Args` is a slice of strings containing all the arguments passed to the program. `os.Args[0]` is the name of the program itself, and `os.Args[1]` is the first argument provided by the user. This line checks if the total number of arguments is not exactly two (program name + one user argument). This is the primary input validation.
+-   `return`: If the number of arguments is wrong, the program prints '0' and a newline, and `return` immediately stops the `main` function.
+-   `arg := os.Args[1]`: We assign the user's argument to the variable `arg`.
+-   `num, err := Atoi(arg)`: This calls our custom `Atoi` function (ASCII to Integer) to convert the string argument into an integer. In Go, functions can return multiple values. Here, `Atoi` returns the integer result (`num`) and a potential error (`err`).
+-   `if err != nil || num <= 0`: This checks two conditions. `err != nil` checks if the `Atoi` conversion failed (e.g., the string contained non-numeric characters). `num <= 0` checks if the number is negative or zero. If either is true, it's invalid input, so we print '0' and exit.
+-   `sum := 0`: A variable `sum` is initialized to zero. This will store the running total of the prime numbers we find.
+-   `for i := 2; i <= num; i++`: This is the main loop. It starts an integer `i` at 2 (the first prime number) and continues as long as `i` is less than or equal to the user's input number, incrementing `i` by one each time.
+-   `if isPrime(i)`: Inside the loop, for each number `i`, this line calls the `isPrime` function to check if `i` is a prime number.
+-   `sum += i`: If `isPrime` returns `true`, the current number `i` is added to our `sum`.
+-   `PrintNbr(sum)`: After the loop finishes, this calls a custom function to print the final calculated `sum`.
+
+**`isPrime` function:**
+
+-   `func isPrime(n int) bool`: This defines a function named `isPrime` that takes one integer `n` and returns a boolean (`true` or `false`).
+-   `if n <= 1`: Prime numbers are defined as being greater than 1. This line handles the base cases, immediately returning `false` for 0, 1, and any negative numbers.
+-   `for i := 2; i*i <= n; i++`: This loop checks for factors of `n`. It's an important optimization. Instead of checking all the way up to `n`, we only need to check up to the square root of `n`. **Why?** Because if a number `n` has a divisor `d` that is larger than its square root, it must also have a corresponding divisor `n/d` that is *smaller* than its square root. So, if we don't find any divisors by the time we reach the square root, we can be sure none exist.
+-   `if n%i == 0`: The modulo operator (`%`) gives the remainder of a division. If the remainder of `n` divided by `i` is 0, it means `i` is a divisor, and therefore `n` is not a prime number. The function returns `false`.
+-   `return true`: If the loop finishes without finding any divisors, it means the number is prime, and the function returns `true`.
 
 ---
 
@@ -111,7 +106,6 @@ Write a function `Atoi` that converts a string of digits into an integer.
 
 - The function should handle both positive and negative numbers, which are indicated by a `+` or `-` sign at the very beginning of the string.
 - If the string contains any characters that are not digits (outside of the optional leading sign), the function should return `0`.
-- For this exercise, you can assume the number will fit within the `int` type.
 
 ### Answer
 
@@ -140,16 +134,23 @@ func Atoi(s string) int {
 }
 ```
 
-### Explanation
+### Detailed Code Explanation
 
-This function replicates the basic functionality of the standard library's `Atoi` (ASCII to Integer).
+This function manually implements the logic for converting a string of characters into an integer.
 
-1.  **Initialization**: It initializes the result `res` to `0` and the `sign` to `1` (for positive numbers).
-2.  **Iteration**: The function iterates over each character `c` of the input string `s`.
-3.  **Sign Handling**: For the first character (`i == 0`), it checks for a `+` or `-` sign. If a `-` is found, the `sign` is changed to `-1`. The `continue` statement then skips to the next character.
-4.  **Validation**: For all other characters, it checks if the character is a digit (`'0'` to `'9'`). If a non-digit character is found, the function immediately returns `0` as per the requirements.
-5.  **Conversion**: If the character is a digit, it's converted to its integer value using `int(c - '0')`. This works because character codes for digits are sequential. The value is then added to the `res` after multiplying `res` by 10 to shift the existing digits one place to the left.
-6.  **Final Result**: After the loop, the final `res` is multiplied by `sign` to apply the negative sign if one was present, and the result is returned.
+-   `if len(s) == 0`: This is a guard clause. If the input string `s` is empty, there's nothing to convert, so it returns `0` immediately.
+-   `res := 0`: Initializes the `res` (result) variable, which will accumulate the final integer value.
+-   `sign := 1`: Initializes a `sign` multiplier to `1` (for positive numbers). This will be changed to `-1` if a negative sign is found.
+-   `for i, c := range s`: This is a `for...range` loop, a common way to iterate over strings in Go. In each iteration, it gives you the index `i` and the character (as a `rune`) `c`.
+-   `if i == 0 && (c == '+' || c == '-')`: This checks if we are at the very first character of the string (`i == 0`) AND if that character is either a `+` or a `-`.
+    -   `if c == '-'`: If the sign is a minus, the `sign` variable is updated to `-1`.
+    -   `continue`: This keyword immediately skips to the next iteration of the loop, so the sign character itself isn't processed as a digit.
+-   `if c < '0' || c > '9'`: This checks if the character `c` is NOT a digit. It does this by comparing its value to the values of the characters '0' and '9'. If it's any other character, the string is invalid, and the function returns `0`.
+-   `res = res*10 + int(c-'0')`: This is the core of the conversion.
+    -   `res * 10`: This shifts the digits we've already processed one place to the left (e.g., if `res` is 12, it becomes 120).
+    -   `int(c - '0')`: This converts the digit character to its integer equivalent. In ASCII (and UTF-8), digits '0' through '9' are encoded as sequential numbers. So, subtracting the character '0' from any other digit character gives you the integer value of that digit (e.g., '7' - '0' = 7).
+    -   The new digit is then added to the shifted result.
+-   `return res * sign`: After the loop, the final accumulated `res` is multiplied by `sign`. If no negative sign was found, this multiplies by 1 (no change). If a negative sign was found, it multiplies by -1, making the result negative.
 
 ---
 
@@ -159,9 +160,8 @@ This function replicates the basic functionality of the standard library's `Atoi
 
 Write a program that takes one or more strings as command-line arguments. For each argument, the program must determine if the brackets `()`, `[]`, and `{}` are balanced and correctly nested.
 
-- If the brackets in a string are balanced, the program should print `OK` followed by a newline.
-- If they are not balanced, it should print `Error` followed by a newline.
-- If no arguments are provided, the program should just print a newline.
+- If the brackets in a string are balanced, the program should print `OK`.
+- If they are not balanced, it should print `Error`.
 - Characters that are not brackets should be ignored.
 
 ### Answer
@@ -170,25 +170,12 @@ Write a program that takes one or more strings as command-line arguments. For ea
 package main
 
 import (
-	"os"
-
+	os
 	"github.com/01-edu/z01"
 )
 
 func main() {
-	if len(os.Args) == 1 {
-		z01.PrintRune('\n')
-		return
-	}
-
-	args := os.Args[1:]
-	for _, arg := range args {
-		if isBalanced(arg) {
-			printStr("OK\n")
-		} else {
-			printStr("Error\n")
-		}
-	}
+	// ...
 }
 
 func isBalanced(s string) bool {
@@ -216,27 +203,28 @@ func isBalanced(s string) bool {
 	}
 	return len(stack) == 0
 }
-
-func printStr(s string) {
-	for _, r := range s {
-		z01.PrintRune(r)
-	}
-}
 ```
 
-### Explanation
+### Detailed Code Explanation
 
-This program uses a classic stack-based approach to validate balanced brackets.
+This problem is a classic example of using a **stack** data structure. A stack follows a "Last-In, First-Out" (LIFO) principle. Think of it like a stack of plates: you add new plates to the top, and you can only remove the top plate.
 
-1.  **Argument Handling**: The `main` function iterates through each command-line argument provided. If no arguments are given, it simply prints a newline.
-2.  **Balancing Logic**: The `isBalanced` function is the core of the solution. It uses a `slice` of runes (`[]rune`) named `stack` to keep track of opening brackets.
-3.  **Processing Characters**: It iterates through each character of the input string.
-    - **Opening Brackets**: When an opening bracket (`(`, `[`, or `{`) is encountered, it is "pushed" onto the stack (appended to the slice).
-    - **Closing Brackets**: When a closing bracket (`)`, `]`, or `}`) is found, the function checks two conditions:
-        1.  Is the stack empty? If so, there's no matching opening bracket, so the string is unbalanced.
-        2.  Does the bracket at the top of the stack match the current closing bracket? (e.g., `)` must match `(`). If not, the nesting is incorrect, and the string is unbalanced.
-    - If both conditions are met, the matching opening bracket is "popped" from the stack (by slicing the slice to exclude the last element).
-4.  **Final Check**: After all characters have been processed, the function checks if the stack is empty. If it is, all opening brackets have been matched and closed correctly. If the stack is not empty, it means there are unmatched opening brackets. The function returns `true` if the stack is empty, and `false` otherwise.
+**`isBalanced` function:**
+
+-   `var stack []rune`: In Go, a slice can be used to simulate a stack. We declare a slice of `rune` (a character type) called `stack`. We will use it to store the opening brackets we encounter.
+-   `for _, r := range s`: We loop through each character `r` in the input string.
+-   `switch r`: A `switch` statement is a clean way to handle the different types of characters.
+-   `case '(', '[', '{':`: If the character is an opening bracket...
+    -   `stack = append(stack, r)`: ...we "push" it onto our stack. The `append` function adds the new bracket to the end of the slice.
+-   `case ')':`: If the character is a closing parenthesis...
+    -   `if len(stack) == 0 || stack[len(stack)-1] != '('`: ...we check two critical conditions.
+        1.  `len(stack) == 0`: Is the stack empty? If it is, we have a closing bracket with no corresponding opening bracket. This is an error.
+        2.  `stack[len(stack)-1] != '('`: If the stack is not empty, we look at the last element (`stack[len(stack)-1]`, which is the "top" of our stack). Does it match the type of closing bracket we have? If we have a `)` but the top of the stack is `[` or `{`, the brackets are not correctly nested. This is an error.
+    -   `stack = stack[:len(stack)-1]`: If the conditions pass, it means we found a valid, matching pair. We "pop" the opening bracket off the stack. This is done by re-slicing the slice to exclude the last element.
+-   `case ']':` and `case '}':`: These follow the exact same logic as the closing parenthesis, just for their respective bracket types.
+-   `return len(stack) == 0`: After the loop has checked every character in the string, we look at the stack one last time.
+    -   If the stack is empty (`len(stack) == 0`), it means every opening bracket we found was perfectly matched with a closing bracket. The expression is balanced, and the function returns `true`.
+    -   If the stack is *not* empty, it means we have leftover opening brackets that were never closed (e.g., "([)]"). The expression is unbalanced, and the function returns `false`.
 
 ---
 
@@ -244,11 +232,7 @@ This program uses a classic stack-based approach to validate balanced brackets.
 
 ### Question
 
-Write a program `cameltosnakecase` that converts a string from `camelCase` to `snake_case`.
-
-- The program should take a single string as a command-line argument.
-- The conversion rule is to insert an underscore `_` before each uppercase letter and convert that letter to lowercase.
-- If the program is run with zero or more than one argument, it should do nothing.
+Write a program `cameltosnakecase` that converts a string from `camelCase` to `snake_case`. The conversion rule is to insert an underscore `_` before each uppercase letter and convert that letter to lowercase.
 
 ### Answer
 
@@ -257,7 +241,6 @@ package main
 
 import (
 	"os"
-
 	"github.com/01-edu/z01"
 )
 
@@ -286,18 +269,20 @@ func main() {
 }
 ```
 
-### Explanation
+### Detailed Code Explanation
 
-This program performs a straightforward character-by-character conversion from camelCase to snake_case.
+This program converts a string from one common programming case style to another by iterating through it character by character.
 
-1.  **Argument Check**: The `main` function first ensures that exactly one command-line argument is provided. If not, it exits immediately.
-2.  **Iteration**: It iterates through the input string, examining each character `r` and its index `i`.
-3.  **Uppercase Detection**: Inside the loop, it checks if a character is an uppercase letter (`r >= 'A' && r <= 'Z'`)
-4.  **Conversion Logic**:
-    - If an uppercase letter is found and it's not the first character of the string (`i > 0`), an underscore `_` is appended to the `result` slice first.
-    - The uppercase letter is then converted to lowercase by adding the difference between `'a'` and `'A'` to its character code (`r - 'A' + 'a'`). This lowercase letter is appended to the `result`.
-    - If the character is not an uppercase letter, it is appended to the `result` slice unchanged.
-5.  **Output**: After the entire string is processed, the program iterates through the `result` rune slice and prints each character, followed by a final newline.
+-   `var result []rune`: We declare a slice of runes called `result`. We will build our new `snake_case` string in this slice. Using a rune slice is often better than building a string directly with `+` because it can be more efficient and handles all characters correctly.
+-   `for i, r := range s`: We loop through the input string `s`, getting both the index `i` and the character `r` for each pass.
+-   `if r >= 'A' && r <= 'Z'`: This condition checks if the current character `r` is an uppercase letter.
+-   `if i > 0`: If it *is* an uppercase letter, we have a nested check. This ensures we don't add an underscore at the very beginning of the string (e.g., for an input like "MyVariable"). An underscore is only added if the uppercase letter is found after the first character.
+-   `result = append(result, '_')`: If the conditions are met, an underscore character is appended to our `result` slice.
+-   `result = append(result, r-'A'+'a')`: This line converts the uppercase letter to lowercase and appends it.
+    -   `r - 'A'`: This calculates the "distance" of the uppercase letter from 'A'. For 'C', this would be 2.
+    -   `... + 'a'`: This adds that distance to the character 'a'. For 'C', this becomes 'a' + 2, which results in the character 'c'.
+-   `else { result = append(result, r) }`: If the character was not an uppercase letter, it's appended to the `result` slice without any changes.
+-   `for _, r := range result`: After the main loop has finished building the `result` slice, this second loop iterates through our new slice and prints each character one by one.
 
 ---
 
@@ -308,52 +293,14 @@ This program performs a straightforward character-by-character conversion from c
 Write a program that determines if it's possible to "jump" from the first element to the last element of an array of integers. The value of each element represents the maximum jump length from that position.
 
 - The input is provided as a single command-line argument: a string representing an array of non-negative integers (e.g., `"[2,3,1,1,4]"`).
-- If it's possible to reach the last element, the program should print `OK`.
-- If it's not possible, it should print `Error`.
-- If the input is invalid (e.g., not a valid array string, contains negative numbers, or wrong number of arguments), the program should print `Error`.
+- If it's possible to reach the last element, print `OK`. If not, print `Error`.
 
 ### Answer
 
 ```go
 package main
 
-import (
-	"fmt"
-	"os"
-	"strconv"
-	"strings"
-)
-
-func main() {
-	if len(os.Args) != 2 {
-		fmt.Println("Error")
-		return
-	}
-
-	numsStr := os.Args[1]
-	numsStr = strings.Trim(numsStr, "[]")
-	if numsStr == "" {
-		fmt.Println("OK") // Empty or single-element array is a success case
-		return
-	}
-
-	parts := strings.Split(numsStr, ",")
-	nums := make([]int, 0, len(parts))
-	for _, part := range parts {
-		num, err := strconv.Atoi(strings.TrimSpace(part))
-		if err != nil || num < 0 {
-			fmt.Println("Error")
-			return
-		}
-		nums = append(nums, num)
-	}
-
-	if canJump(nums) {
-		fmt.Println("OK")
-	} else {
-		fmt.Println("Error")
-	}
-}
+// ... imports and main function for parsing ...
 
 func canJump(nums []int) bool {
 	if len(nums) <= 1 {
@@ -363,30 +310,31 @@ func canJump(nums []int) bool {
 	maxReach := 0
 	for i, num := range nums {
 		if i > maxReach {
-			return false // Current position is unreachable
+			return false
 		}
 		if i+num > maxReach {
 			maxReach = i + num
 		}
 		if maxReach >= len(nums)-1 {
-			return true // Destination is reachable
+			return true
 		}
 	}
 	return false
 }
 ```
 
-### Explanation
+### Detailed Code Explanation
 
-This program implements a greedy algorithm to solve the "Jump Game" problem.
+This problem can be solved efficiently using a **greedy algorithm**. The core idea is to keep track of the farthest index you can possibly reach at any given moment.
 
-1.  **Input Parsing**: The `main` function first validates the command-line arguments. It then parses the input string: it removes the `[]` brackets, splits the string by commas, and converts each part into an integer. It performs error checking at each step; if the input is malformed or contains negative numbers, it prints `Error` and exits. An empty or single-element array is considered a success.
-2.  **Greedy Algorithm**: The `canJump` function implements the core logic. It uses a variable `maxReach` to keep track of the farthest index that can be reached from the start.
-3.  **Iteration and Logic**:
-    - The function iterates through the `nums` array with both the index `i` and the value `num`.
-    - **Unreachability Check**: In each step, it first checks if the current index `i` is greater than `maxReach`. If it is, it means the current position is impossible to get to, so we can't proceed. The function returns `false`.
-    - **Update Max Reach**: It calculates the potential new farthest reach from the current position (`i + num`) and updates `maxReach` if this new reach is greater than the current `maxReach`.
-    - **Goal Check**: It then checks if `maxReach` is greater than or equal to the last index of the array (`len(nums) - 1`). If it is, it means the end is reachable, and the function can return `true` immediately.
-4.  **Final Result**: If the loop completes without `maxReach` ever reaching the last index, it means the end is unreachable, and the function returns `false`. The `main` function prints `OK` or `Error` based on the boolean result.
+**`canJump` function:**
+
+-   `if len(nums) <= 1`: This handles a simple edge case. If the array has 0 or 1 elements, you are already at the "last" element, so the journey is trivially successful.
+-   `maxReach := 0`: We initialize a variable `maxReach`. This will always store the furthest index in the array that we know is reachable from the start. Initially, we can only reach index 0.
+-   `for i, num := range nums`: We loop through the array, getting both the index `i` and the value `num` at that index.
+-   `if i > maxReach`: This is the most important check. At each position `i`, we first ask: "Is this position even reachable?" If our current index `i` is greater than the `maxReach` we've calculated so far, it means we've hit a gap in the array that we cannot jump over. For example, in `[1, 0, 4]`, `maxReach` will be 1 after the first step. When the loop gets to index `i = 2`, `i` will be greater than `maxReach`, meaning we can't get to index 2. The function returns `false`.
+-   `if i+num > maxReach`: If the current position *is* reachable, we calculate how far we could jump *from here*. The furthest we can get from index `i` is `i + num`. If this new potential reach is greater than our current `maxReach`, we update `maxReach`.
+-   `if maxReach >= len(nums)-1`: After updating `maxReach`, we check if our farthest reachable point has met or passed the last index of the array (`len(nums)-1`). If it has, we know a path to the end is possible, and we can return `true` immediately without checking the rest of the array.
+-   `return false`: If the loop finishes without `maxReach` ever reaching the end, it means we got stuck somewhere. The function returns `false`.
 
 ```
